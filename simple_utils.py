@@ -10,3 +10,6 @@ def celsius_to_fahrenheit(celsius):
 
 def count_characters(sentence):
    return len(sentence)
+
+def fahrenheit_to_celsius(farenheit):
+ return (farenheit - 32) * 5/9
