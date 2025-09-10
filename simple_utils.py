@@ -13,3 +13,12 @@ def count_characters(sentence):
 
 def fahrenheit_to_celsius(farenheit):
  return (farenheit - 32) * 5/9
+
+def count_numbers(lst):
+ return len([x for x in lst if isinstance(x, (int, float))])
+
+def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)   
