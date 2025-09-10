@@ -1,0 +1,55 @@
+name: SonarCloud
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  sonarcloud:
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install optional test deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest coverage || true
+
+      - name: Run tests with coverage (non-blocking)
+        run: |
+          coverage run -m pytest || true
+          coverage xml || echo "<coverage></coverage>" > coverage.xml
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2.3.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        # Project configuration is read from sonar-project.properties
+
+      - name: Quality Gate (wait for analysis)
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: SonarSource/sonarcloud-github-action@v2.3.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true
+
+    # Note: Configure repository secrets:
+    #  - SONAR_TOKEN: SonarCloud user token with 'Execute analysis' permission
+
+
