@@ -38,12 +38,7 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2.3.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-            -Dsonar.python.version=3.11
-            -Dsonar.python.coverage.reportPaths=coverage.xml
+        # Project configuration is read from sonar-project.properties
 
       - name: Quality Gate (wait for analysis)
         if: ${{ github.event_name == 'pull_request' }}
@@ -56,7 +51,5 @@ jobs:
 
     # Note: Configure repository secrets:
     #  - SONAR_TOKEN: SonarCloud user token with 'Execute analysis' permission
-    #  - SONAR_ORGANIZATION: your SonarCloud organization key
-    #  - SONAR_PROJECT_KEY: your SonarCloud project key
 
 
